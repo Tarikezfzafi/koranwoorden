@@ -50,7 +50,7 @@ function posLabel(L) {
     if (vf) { if (vf[1] !== '1') parts.push('vorm ' + ROMAN[+vf[1]]); }
     else if (SUBNL[t]) parts.push(SUBNL[t]);
   }
-  return [...new Set(parts)].join(' · ');
+  return [...new Set(parts)].join(', ');
 }
 const segsOf = w => Array.isArray(w[4]) ? w[4] : [[w[0], w[4]]];
 function stemLabel(code) {
@@ -67,7 +67,7 @@ function stemLabel(code) {
     if (tags.includes('INDEF')) out.push('onbepaald (een …)');
   } else out.push('partikel');
   const vf = tags.find(t => /^VF\d/.test(t)); if (vf && vf !== 'VF1') out.push('vorm ' + ROMAN[+vf.slice(2)] + ': ' + (VFORM[+vf.slice(2)] || ''));
-  return out.join(' · ');
+  return out.join(', ');
 }
 function segLabel(code, stemPos) {
   const k = code[0], v = code.slice(1);
@@ -81,7 +81,7 @@ function interestingForm(w) { const m = w[4]; return Array.isArray(m) || /^sV/.t
 function breakdown(w) {
   const ss = segsOf(w), stem = ss.find(s => s[1][0] === 's'), sp = stem ? stem[1][1] : 'N', i = w[3];
   return `<div class="segs">${ss.map(([f, c]) => `<span class="seg seg-${c[0]}"><b>${esc(f)}</b><small>${esc(segLabel(c, sp))}</small></span>`).join('')}</div>
-    <div class="small muted">Grondwoord <span class="ar">${esc(LEM[i][0])}</span> = ${esc(meaning(i))}${LEM[i][1] ? ` · wortel <a href="#/wortel/${encodeURIComponent(LEM[i][1])}" class="ar">${esc(spaced(LEM[i][1]))}</a>` : ''}</div>`;
+    <div class="small muted">Grondwoord <span class="ar">${esc(LEM[i][0])}</span> = ${esc(meaning(i))}${LEM[i][1] ? `, wortel <a href="#/wortel/${encodeURIComponent(LEM[i][1])}" class="ar">${esc(spaced(LEM[i][1]))}</a>` : ''}</div>`;
 }
 const meaning = i => LEM[i][5] || (LEM[i][9][0] ? LEM[i][9][0] + ' (EN)' : '—');
 const isFunc = i => LEM[i][2] === 'P' || /PRON|DEM|REL/.test(LEM[i][3]);
@@ -117,7 +117,7 @@ function irabRel(s, a, k) { const t = tbFor(s, a, k); if (!t) return null; const
 function gharibFor(s, a, k) {
   const v = QW.v[s]; if (!v) return [];
   const w = skel(wordAt(s, a, k)[0]); if (!w) return [];
-  return (v.gh[a - 1] || []).filter(g => { const t = skel(g[0]); return t === w || (w.length >= 2 && t.split(/\s+/).length < 4 && (t.includes(w) || w.includes(t) && t.length >= 2)); }).slice(0, 3);
+  return (v.gh[a - 1] || []).filter(g => { const t = skel(g[0]); return t === w || (w.length >= 3 && g[0].trim().split(/\s+/).length < 4 && (t.includes(w) || (w.includes(t) && t.length >= 3))); }).slice(0, 3);
 }
 function darwishBlock(s, a) { const v = QW.v[s]; return v ? v.ir.find(b => b[0].includes(a)) : null; }
 function darwishFor(s, a, k) {
@@ -137,12 +137,12 @@ function darwishFor(s, a, k) {
 function irabHtml(s, a, k) {
   const t = tbFor(s, a, k), d = darwishFor(s, a, k);
   if (!t && !d) return '';
-  const toks = t ? t.map(x => `<span class="tok"><b>${esc(x[0])}</b> ${esc(x[1])}${x[2] ? ` · <em>${esc(x[2])}</em>` : ''}${x[3] ? ` ← ${esc(wordAt(s, a, x[3])[0])}` : ''}${x[4] ? ` (${esc(x[4])})` : ''}</span>`).join('') : '';
+  const toks = t ? t.map(x => `<span class="tok"><b>${esc(x[0])}</b> ${esc(x[1])}${x[2] ? `، <em>${esc(x[2])}</em>` : ''}${x[3] ? ` ← ${esc(wordAt(s, a, x[3])[0])}` : ''}${x[4] ? ` (${esc(x[4])})` : ''}</span>`).join('') : '';
   return `<div class="irab" dir="rtl">${toks ? `<div><span class="srcl">الإعراب (الشجرة النحوية)</span>${toks}</div>` : ''}${d ? `<div class="drw"><span class="srcl">إعراب القرآن وبيانه</span> (${esc(d[0])}) ${esc(d[1].slice(0, 400))}${d[1].length > 400 ? '…' : ''}</div>` : ''}</div>`;
 }
 function gharibHtml(s, a, k) {
   const g = gharibFor(s, a, k); if (!g.length) return '';
-  return `<div class="gharib" dir="rtl"><span class="srcl">معنى الكلمة في هذه الآية</span>${g.map(x => `<div><b>${esc(x[0])}:</b> ${x[1]} <small class="muted">— ${esc(x[2])}</small></div>`).join('')}</div>`;
+  return `<div class="gharib" dir="rtl"><span class="srcl">معنى الكلمة في هذه الآية</span>${g.map(x => `<div><b>${esc(x[0])}:</b> ${x[1]} <small class="muted">(${esc(x[2])})</small></div>`).join('')}</div>`;
 }
 function nlBlock(t) {
   if (S.set.nl === 'nooit' || !t) return '';
@@ -182,7 +182,7 @@ function askPersist() { try { navigator.storage?.persist?.(); } catch (e) { } }
 /* ---------------- herhalingsschema (SM-2 variant) ---------------- */
 const newCard = s => ({ d: today(), i: 0, e: 2.5, r: 0, l: 0, s: s || null, f: today(), n: 0, k: 0 });
 function status(i) { const c = S.cards[i]; if (!c) return 'new'; if (c.x) return 'done'; return c.i >= 21 ? 'known' : 'learning'; }
-const STLABEL = { new: 'nieuw', learning: 'aan het leren', known: 'beheerst', done: 'begrepen ✓' };
+const STLABEL = { new: 'nieuw', learning: 'aan het leren', known: 'beheerst', done: 'begrepen' };
 const knownish = i => { const s = status(i); return s !== 'new'; };
 function grade(i, g, s) {
   const t = today();
@@ -200,7 +200,7 @@ function grade(i, g, s) {
 function excludeWord(i, s) {
   const c = S.cards[i] || (S.cards[i] = newCard(s)); c.x = 1; c.i = Math.max(c.i, 365); save();
   if (SES) SES.items.forEach(it => { if (it.i === i && SES.items.indexOf(it) > SES.pos) it.skip = true; });
-  toast('Komt niet meer terug — telt als begrepen');
+  toast('Dit woord komt niet meer terug en telt als begrepen');
 }
 function hToday() { const t = today(); return S.hist[t] || (S.hist[t] = { n: 0, c: 0, new: 0, ms: 0, w: 0, rd: 0 }); }
 const dayDone = d => (S.hist[d]?.n || 0) >= S.set.goal || S.frz.days.includes(d);
@@ -216,13 +216,13 @@ function logAnswer(ok, isNew) {
   h.n++; if (ok) h.c++; if (isNew) h.new++;
   if (!was && dayDone(today())) {
     const st = streak();
-    if (st > 0 && st % 7 === 0 && S.frz.n < 2) { S.frz.n++; toast(`🔥 ${st} dagen! Je verdient een streak-bevriezing ❄`); }
-    else toast('Dagdoel gehaald ✓');
+    if (st > 0 && st % 7 === 0 && S.frz.n < 2) { S.frz.n++; toast(`${st} dagen op rij. Je krijgt een bevriezing voor een gemiste dag.`); }
+    else toast('Dagdoel gehaald');
   }
 }
 function applyFreeze() {
   const y = today() - 1;
-  if (!dayDone(y) && dayDone(y - 1) && S.frz.n > 0) { S.frz.n--; S.frz.days.push(y); save(); setTimeout(() => toast('❄ Gisteren gemist — bevriezing gebruikt, je streak blijft staan'), 600); }
+  if (!dayDone(y) && dayDone(y - 1) && S.frz.n > 0) { S.frz.n--; S.frz.days.push(y); save(); setTimeout(() => toast('Gisteren gemist. Een bevriezing houdt je reeks in stand.'), 600); }
 }
 const dueIds = (filter) => Object.keys(S.cards).map(Number).filter(i => !S.cards[i].x && S.cards[i].d <= today() && (!filter || filter(i))).sort((a, b) => S.cards[a].d - S.cards[b].d);
 const newLeftToday = () => Math.max(0, S.set.newPerDay - (S.hist[today()]?.new || 0));
@@ -238,11 +238,11 @@ const topKnown = n => { let k = 0; for (let i = 0; i < n; i++) if (S.cards[i]) k
 /* ---------------- kleine UI-blokken ---------------- */
 function resBadge(i) {
   const lv = LEM[i][6];
-  return lv === 2 ? '<span class="badge r2" title="Extra onderzoek nodig">⚠ onderzoek</span>' : lv === 1 ? '<span class="badge r1" title="Betekenis hangt af van context">◐ context</span>' : '';
+  return lv === 2 ? '<span class="badge r2" title="Extra onderzoek nodig">onderzoek nodig</span>' : lv === 1 ? '<span class="badge r1" title="Betekenis hangt af van context">let op context</span>' : '';
 }
 function researchBox(i) {
   const L = LEM[i], lv = L[6];
-  const head = lv === 2 ? '⚠ Extra onderzoek nodig' : lv === 1 ? '◐ Let op de context' : '✓ Betekenis vrij eenduidig';
+  const head = lv === 2 ? 'Extra onderzoek nodig' : lv === 1 ? 'Let op de context' : 'Betekenis vrij eenduidig';
   const expl = lv === 2 ? 'De Nederlandse vertaling dekt de Arabische lading maar deels. Lees een klassiek lexicon (Lane) en tafsir erbij.'
     : lv === 1 ? 'De dichtstbijzijnde vertaling klopt meestal, maar de nuance verschuift per vers. Kijk naar de contextuele vertaling.'
       : 'De dichtstbijzijnde vertaling dekt de betekenis goed.';
@@ -269,7 +269,7 @@ function rootBox(i, opts = {}) {
   const R = ROOTS[r], fam = R[2].filter(j => j !== i);
   return `<div class="rootbox">
     <div class="row between"><a class="rootletters ar" href="#/wortel/${encodeURIComponent(r)}">${esc(spaced(r))}</a>
-      <div class="small" style="text-align:right">wortel · kern: <b>${esc(R[0])}</b><br><span class="muted">${R[2].length} woorden · ${R[3]}× in de Koran</span></div></div>
+      <div class="small" style="text-align:right">Wortel, kern: <b>${esc(R[0])}</b><br><span class="muted">${R[2].length} woorden, ${R[3]} keer in de Koran</span></div></div>
     ${fam.length ? `<div class="fam">${fam.slice(0, opts.max || 6).map(j => `<a href="#/woord/${j}" class="famw ${knownish(j) ? 'k' : ''}"><span class="ar">${esc(LEM[j][0])}</span><small>${esc(meaning(j))}</small></a>`).join('')}${fam.length > (opts.max || 6) ? `<a class="famw more" href="#/wortel/${encodeURIComponent(r)}">+${fam.length - (opts.max || 6)}</a>` : ''}</div>` : ''}
   </div>`;
 }
@@ -294,14 +294,14 @@ function contextBlock(s, a, w, opts = {}) {
   return `<div class="context">
     <div class="arline">${verseArabic(s, a, w, { window: opts.window })}</div>
     <div class="row between small wrap" style="margin:4px 0 6px">
-      <span><b class="ar">${esc(word[0])}</b> <span class="muted">(${esc(word[2])})</span> = <i>${esc(word[1])}</i> <span class="muted">— in dit vers (EN)</span></span>
+      <span><b class="ar">${esc(word[0])}</b> <span class="muted">(${esc(word[2])})</span> = <i>${esc(word[1])}</i> <span class="muted">(Engels, in dit vers)</span></span>
       <button class="audio" data-play="${s}:${a}:${w}">▶ luister</button>
     </div>
     ${gharibHtml(s, a, w)}
     ${opts.breakdown ? breakdown(word) + irabHtml(s, a, w) : ''}
     ${opts.noTafsir ? '' : muyassarHtml(s, a)}
     ${opts.noNl ? '' : nlBlock(v[0])}
-    <div class="ref"><a href="#/soera/${s}/tekst">${esc(SUR[s - 1][1])}</a> ${s}:${a} · <a href="#/vers/${s}/${a}">vers bestuderen (tafsir · i'rab) →</a></div>
+    <div class="ref"><a href="#/soera/${s}/tekst">${esc(SUR[s - 1][1])}</a> ${s}:${a}. <a href="#/vers/${s}/${a}">Vers bestuderen</a></div>
   </div>`;
 }
 document.addEventListener('click', e => {
@@ -314,7 +314,7 @@ const KB_ROWS = ['ض ص ث ق ف غ ع ه خ ح ج', 'ش س ي ب ل ا ت ن م
 function arInput(id, ph) {
   const scr = S.set.kb === 'scherm';
   return `<div class="arinput"><input id="${id}" class="ar answer" dir="rtl" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="${esc(ph || 'typ in het Arabisch')}" ${scr ? 'inputmode="none"' : ''}>
-    <button class="btn sm kbtoggle" type="button" data-kbt title="Wissel tussen schermtoetsenbord en eigen toetsenbord">${scr ? '⌨ eigen toetsenbord' : '⌨ schermtoetsenbord'}</button></div>
+    <button class="btn sm kbtoggle" type="button" data-kbt title="Wissel tussen schermtoetsenbord en eigen toetsenbord">${scr ? 'Gebruik eigen toetsenbord' : 'Gebruik schermtoetsenbord'}</button></div>
     ${scr ? `<div class="kb" data-for="${id}">${KB_ROWS.map(r => `<div>${r.split(' ').map(k => `<button type="button" data-k="${k}">${k}</button>`).join('')}${r === KB_ROWS[3] ? '<button type="button" data-k=" " class="wide">spatie</button><button type="button" data-k="⌫" class="wide">⌫</button>' : ''}</div>`).join('')}</div>` : ''}`;
 }
 document.addEventListener('click', e => {
@@ -357,53 +357,56 @@ const TIPS = [
   'Schrijf lastige woorden in je schrift: wortel, vormen, en het vers waarin het staat. Je hand onthoudt mee.',
   'Lees na elke ronde een paar verzen met je nieuwe woorden. Groen = woorden die je al kent.',
   'Spreek het woord hardop na. Horen + zeggen + schrijven: drie sporen naar je geheugen.',
-  'Zie je ⚠ onderzoek? Zoek de wortel op in Lane (ejtaal) en lees een tafsir over het vers.',
+  'Staat er "onderzoek nodig"? Zoek de wortel op in Lane (ejtaal) en lees een tafsir over het vers.',
   'Begrijp je een woord echt overal? Tik op "Ken ik overal" en het komt niet meer terug.',
 ];
 route(/^\/$/, async () => {
-  const t = today(), h = S.hist[t] || { n: 0 };
-  const due = dueIds().length, nNew = Math.min(newLeftToday(), newCandidates(S.focus, 999).length, Math.max(2, Math.ceil(S.set.len / 3)));
+  const t = today(), h = S.hist[t] || { n: 0 }, goal = S.set.goal;
+  const due = dueIds().length, cands = newCandidates(S.focus, 999);
+  const nNew = Math.min(newLeftToday(), cands.length, Math.max(2, Math.ceil(S.set.len / 3)));
   const ids = Object.keys(S.cards).map(Number);
   const done = ids.filter(i => S.cards[i].x).length, known = ids.filter(i => status(i) === 'known').length;
   const cov = coverage(ids) / TOTAL_WORDS * 100;
-  const st = streak();
-  const sessQ = Math.min(due, S.set.len) + nNew * 3;
+  const st = streak(), dagen = n => n === 1 ? 'dag' : 'dagen';
+  const nDue = Math.min(due, S.set.len), mins = Math.max(2, Math.round((nDue + nNew * 3) * 20 / 60));
+  const segN = Math.min(goal, 30), filled = Math.min(segN, Math.round(Math.min(h.n, goal) / goal * segN));
   const week = [];
   for (let d = t - 6; d <= t; d++) {
     const n = S.hist[d]?.n || 0, fz = S.frz.days.includes(d);
-    week.push(`<div><i class="${fz ? 'frz' : n >= S.set.goal ? 'on' : n > 0 ? 'part' : ''}"></i>${DAYS[new Date(d * 864e5).getUTCDay()]}</div>`);
+    week.push(`<div><i class="${fz ? 'frz' : n >= goal ? 'on' : n > 0 ? 'part' : ''}" title="${n} antwoorden"></i>${DAYS[new Date(d * 864e5).getUTCDay()]}</div>`);
   }
-  const focusName = S.focus ? `soera ${esc(SUR[S.focus - 1][1])} <span class="ar">${esc(SUR[S.focus - 1][2])}</span>` : 'de meest voorkomende woorden eerst';
+  const next = nNew ? cands[0] : null;
   const needBackup = ids.length >= 10 && (!S.lastBackup || t - S.lastBackup >= 7);
+  const parts = [nDue ? `${nDue} herhalen` : '', nNew ? `${nNew} ${nNew === 1 ? 'nieuw woord' : 'nieuwe woorden'}` : ''].filter(Boolean).join(' en ');
+  const statusLine = h.n >= goal ? `Dagdoel gehaald. Je reeks staat op ${st} ${dagen(st)}.`
+    : `${h.n} van ${goal} gedaan. Nog ${goal - h.n} en je reeks staat op ${dayDone(t - 1) ? st + 1 : 1} ${dagen(dayDone(t - 1) ? st + 1 : 1)}.`;
   $main.innerHTML = `
-  ${needBackup ? `<div class="card banner"><b>Back-up maken</b><p class="small" style="margin:4px 0 8px">Je hebt ${ids.length} woorden in je geheugen. Bewaar een back-up (bv. in iCloud/Drive) zodat je nooit iets kwijtraakt.</p><button class="btn sm primary" data-backup>Back-up opslaan</button></div>` : ''}
-  <div class="card">
-    <div class="streak"><div class="flame">${st > 0 ? '🔥' : '🌱'}</div>
-      <div class="grow"><b>${st}</b> ${st === 1 ? 'dag' : 'dagen'} op rij <div class="muted small">Record: ${bestStreak()} · ${S.frz.n ? `❄ ${S.frz.n} bevriezing${S.frz.n > 1 ? 'en' : ''}` : 'elke 7 dagen verdien je een bevriezing'}</div></div></div>
-    <div class="week">${week.join('')}</div>
+  ${needBackup ? `<div class="card banner"><b>Maak een back-up</b><p class="small muted" style="margin:4px 0 10px">Er staan ${ids.length} woorden op dit toestel. Bewaar een kopie in iCloud of Drive, zodat je niets kwijtraakt.</p><button class="btn sm primary" data-backup>Back-up opslaan</button></div>` : ''}
+  <h1>Vandaag</h1>
+  <div class="goal" style="--n:${segN}" role="img" aria-label="${h.n} van ${goal} antwoorden">${Array.from({ length: segN }, (_, k) => `<i class="${k < filled ? 'on' : ''}"></i>`).join('')}</div>
+  <p class="small muted" style="margin-bottom:14px">${statusLine}</p>
+  ${due + nNew > 0
+    ? `<button class="btn primary big block" id="go">Begin korte ronde<span class="sub">${parts}, ongeveer ${mins} minuten</span></button>`
+    : `<button class="btn primary big block" id="extra">Oefen nog een korte ronde<span class="sub">Je herhalingen voor vandaag zijn klaar</span></button>`}
+  ${next !== null ? `<a class="nextword" href="#/woord/${next}" style="display:block;color:inherit;text-decoration:none">
+      <div class="small muted">Eerste nieuwe woord${S.focus ? ` uit ${esc(SUR[S.focus - 1][1])}` : ' in deze ronde'}</div>
+      <div class="big-ar">${esc(LEM[next][0])}</div>
+      <div class="row between"><span class="mean">${esc(meaning(next))}</span>${LEM[next][1] ? `<span class="root-ar">${esc(spaced(LEM[next][1]))}</span>` : ''}</div>
+      <div class="small muted">Komt ${LEM[next][4]} keer voor in de Koran</div></a>` : ''}
+  <h2>Deze week</h2>
+  <div class="week">${week.join('')}</div>
+  <p class="small muted" style="margin-top:8px">Reeks: ${st} ${dagen(st)}, record ${bestStreak()}. ${S.frz.n ? `Je hebt ${S.frz.n} bevriezing${S.frz.n > 1 ? 'en' : ''} voor een gemiste dag.` : 'Na 7 dagen op rij krijg je een bevriezing voor een gemiste dag.'}</p>
+  <h2>Wat je al herkent</h2>
+  <p class="small" style="margin-bottom:6px">${cov.toFixed(1).replace('.', ',')}% van alle woorden in de Koran. ${ids.length ? `Je oefent ${ids.length} woorden, waarvan ${known + done} beheerst.` : ''}</p>
+  ${[100, 300, 1000].map(n => { const k = topKnown(n); return `<div class="cover"><span>Top ${n}</span><div class="track"><b style="width:${k / n * 100}%"></b></div><span>${k} van ${n}</span></div>`; }).join('')}
+  <div style="margin-top:18px">
+    ${ids.length ? `<a class="linkrow" href="#/lezen"><span>Lees verzen met je nieuwe woorden<small>Probeer ze eerst zelf te begrijpen</small></span><span aria-hidden="true">›</span></a>` : ''}
+    <a class="linkrow" href="#/soeras"><span>Kies waar nieuwe woorden vandaan komen<small>${S.focus ? `Nu uit ${esc(SUR[S.focus - 1][1])}` : 'Nu de meest voorkomende woorden eerst'}</small></span><span aria-hidden="true">›</span></a>
   </div>
-  <div class="card">
-    <div class="row between"><h2>Vandaag</h2><span class="muted small">${h.n}/${S.set.goal}</span></div>
-    <div class="bar" style="margin-bottom:12px"><i style="width:${Math.min(100, h.n / S.set.goal * 100)}%"></i></div>
-    <p class="muted small" style="margin-top:0">${due} te herhalen · ${nNew} nieuw${h.n < S.set.goal ? ` · nog ${S.set.goal - h.n} voor je streak` : ' · dagdoel gehaald ✓'}</p>
-    ${due + nNew > 0
-      ? `<button class="btn primary big block" id="go">Start korte ronde <span class="small" style="opacity:.8">(≈ ${Math.max(2, Math.round(sessQ * 20 / 60))} min)</span></button>`
-      : `<button class="btn primary big block" id="extra">${h.n >= S.set.goal ? 'Alles gedaan ✓ — nog een korte ronde?' : 'Oefen je woorden'}</button>`}
-    <p class="small muted" style="margin-bottom:0">Nieuwe woorden: ${focusName} · <a href="#/soeras">kies soera</a>${S.focus ? ' · <a href="#" id="unfocus">terug naar frequentie</a>' : ''}</p>
-  </div>
-  ${ids.length ? `<div class="card row between wrap"><div><b>📖 Lees wat je geleerd hebt</b><div class="small muted">Verzen met je nieuwste woorden — probeer ze zelf te begrijpen.</div></div><a class="btn" href="#/lezen">Lezen</a></div>` : ''}
-  <div class="stats">
-    <div class="stat"><b>${ids.length}</b><span>woorden geleerd${done ? ` (${done} begrepen ✓)` : ''}</span></div>
-    <div class="stat"><b>${known + done}</b><span>beheerst</span></div>
-    <div class="stat"><b>${cov.toFixed(1)}%</b><span>van de Korantekst herken je</span></div>
-  </div>
-  <div class="card" style="margin-top:14px"><b>Meest voorkomende woorden</b>
-    ${[100, 300, 1000].map(n => { const k = topKnown(n); return `<div class="row" style="margin-top:8px"><span class="small" style="width:70px">Top ${n}</span><div class="bar grow"><i style="width:${k / n * 100}%"></i></div><span class="small muted" style="width:64px;text-align:right">${k}/${n}</span></div>`; }).join('')}
-    <p class="small muted" style="margin:8px 0 0">De top 100 dekt ruim de helft van alle woorden in de Koran.</p></div>
-  <div class="card"><b>Tip</b><p class="muted" style="margin:4px 0 0">${esc(TIPS[t % TIPS.length])}</p></div>`;
+  ${S.focus ? '<button class="btn quiet sm" id="unfocus">Terug naar de meest voorkomende woorden</button>' : ''}`;
   document.getElementById('go')?.addEventListener('click', () => startDaily());
   document.getElementById('extra')?.addEventListener('click', () => startDaily(true));
-  document.getElementById('unfocus')?.addEventListener('click', e => { e.preventDefault(); S.focus = null; save(); render(); });
+  document.getElementById('unfocus')?.addEventListener('click', () => { S.focus = null; save(); render(); });
 });
 document.addEventListener('click', e => { if (e.target.closest('[data-backup]')) backup(); });
 
@@ -418,7 +421,7 @@ route(/^\/soeras$/, async () => {
       const learned = s[8].filter(i => S.cards[i]).length;
       return `<li><a class="item" href="#/soera/${s[0]}">
         <span class="num">${s[0]}</span>
-        <span class="grow"><b>${esc(s[1])}</b> ${S.focus === s[0] ? '<span class="badge r0">focus</span>' : ''}<br><span class="muted small">${esc(s[3])} · ${s[4]} verzen</span>
+        <span class="grow"><b>${esc(s[1])}</b> ${S.focus === s[0] ? '<span class="badge r0">focus</span>' : ''}<br><span class="muted small">${esc(s[3])}, ${s[4]} verzen</span>
           <div class="bar" style="margin-top:6px;max-width:220px"><i style="width:${learned / s[6] * 100}%"></i></div>
           <span class="muted small">${learned}/${s[6]} woorden</span></span>
         <span class="ar-name">${esc(s[2])}</span></a></li>`;
@@ -450,20 +453,20 @@ route(/^\/soera\/(\d+)(?:\/(woorden|tekst|lees))?$/, async (n, tab) => {
   let html = `
   <a href="#/soeras" class="small">← Alle soera's</a>
   <div class="card" style="margin-top:8px">
-    <div class="row between"><div><h1 style="margin:0">${n}. ${esc(s[1])}</h1><div class="muted">${esc(s[3])} · ${s[4]} verzen · ${s[7]} woorden · ${s[6]} unieke</div></div>
+    <div class="row between"><div><h1 style="margin:0">${n}. ${esc(s[1])}</h1><div class="muted">${esc(s[3])}, ${s[4]} verzen, ${s[7]} woorden, ${s[6]} unieke</div></div>
       <div class="ar-name" style="font-size:2rem">${esc(s[2])}</div></div>
     <div class="bar" style="margin:12px 0 4px"><i style="width:${learned / s[6] * 100}%"></i></div>
-    <div class="muted small">${learned}/${s[6]} geleerd · je herkent ${surCov.toFixed(0)}% van de woorden in deze soera</div>
+    <div class="muted small">${learned}/${s[6]} geleerd, je herkent ${surCov.toFixed(0)}% van de woorden in deze soera</div>
     <div class="row wrap" style="margin-top:12px">
       <button class="btn primary" id="learn" ${newHere + dueHere === 0 ? 'disabled' : ''}>Leer nieuwe woorden (${Math.min(8, newHere)}${dueHere ? ' + ' + dueHere + ' herhalen' : ''})</button>
       <button class="btn" id="prac">Oefen (typen)</button>
-      <button class="btn" id="focus">${S.focus === n ? '★ Focus-soera' : '☆ Maak focus-soera'}</button>
+      <button class="btn" id="focus">${S.focus === n ? 'Stop met nieuwe woorden uit deze soera' : 'Haal nieuwe woorden uit deze soera'}</button>
     </div>
-    <p class="small muted" style="margin-bottom:0">Focus-soera: je dagelijkse nieuwe woorden komen uit deze soera (meest voorkomende eerst).</p>
+    <p class="small muted" style="margin-bottom:0">Kies je deze soera, dan komen je dagelijkse nieuwe woorden hieruit, de meest voorkomende eerst.</p>
   </div>
   <div class="tabs"><a href="#/soera/${n}/woorden" class="${tab === 'woorden' ? 'on' : ''}">Woorden</a><a href="#/soera/${n}/tekst" class="${tab === 'tekst' ? 'on' : ''}">Tekst</a><a href="#/soera/${n}/lees" class="${tab === 'lees' ? 'on' : ''}">Leesmodus</a></div>`;
   if (tab === 'woorden') {
-    html += `<div class="chips" id="flt"><button data-f="all" class="on">Alle</button><button data-f="new">Nieuw</button><button data-f="learning">Aan het leren</button><button data-f="known">Beheerst</button><button data-f="r">⚠ Onderzoek</button><button data-f="nofunc">Zonder functiewoorden</button></div>
+    html += `<div class="chips" id="flt"><button data-f="all" class="on">Alle</button><button data-f="new">Nieuw</button><button data-f="learning">Aan het leren</button><button data-f="known">Beheerst</button><button data-f="r">Onderzoek nodig</button><button data-f="nofunc">Zonder functiewoorden</button></div>
     <div class="chips" id="srt"><button data-o="soera" class="on">Volgorde in soera</button><button data-o="freq">Meest voorkomend</button></div>
     <div class="card" style="padding:4px 12px"><ul class="list" id="wl"></ul></div>`;
   } else if (tab === 'tekst') {
@@ -482,7 +485,7 @@ route(/^\/soera\/(\d+)(?:\/(woorden|tekst|lees))?$/, async (n, tab) => {
     const draw = () => {
       let list = ids.filter(i => f === 'all' || (f === 'r' ? LEM[i][6] === 2 : f === 'nofunc' ? !isFunc(i) : f === 'known' ? ['known', 'done'].includes(status(i)) : status(i) === f));
       if (o === 'freq') list = list.slice().sort((a, b) => LEM[b][4] - LEM[a][4]);
-      document.getElementById('wl').innerHTML = list.map(i => wordRow(i, `${cnt.get(i).length}× hier · ${LEM[i][4]}× in de Koran`, n)).join('') || '<li class="item muted">Geen woorden in dit filter</li>';
+      document.getElementById('wl').innerHTML = list.map(i => wordRow(i, `${cnt.get(i).length}× hier, ${LEM[i][4]}× in de Koran`, n)).join('') || '<li class="item muted">Geen woorden in dit filter</li>';
     };
     draw();
     document.getElementById('flt').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; document.querySelectorAll('#flt button').forEach(x => x.classList.toggle('on', x === b)); f = b.dataset.f; draw(); });
@@ -497,7 +500,7 @@ route(/^\/soera\/(\d+)(?:\/(woorden|tekst|lees))?$/, async (n, tab) => {
 function wordRow(i, sub, s) {
   return `<li><a class="item" href="#/woord/${i}${s ? '/' + s : ''}">
     <span class="lemma-ar">${esc(LEM[i][0])}</span>
-    <span class="grow"><b>${esc(meaning(i))}</b> ${resBadge(i)}<br><span class="muted small">${sub}${LEM[i][1] ? ` · <span class="ar">${esc(spaced(LEM[i][1]))}</span>` : ''}</span></span>
+    <span class="grow"><b>${esc(meaning(i))}</b> ${resBadge(i)}<br><span class="muted small">${sub}${LEM[i][1] ? `, <span class="ar">${esc(spaced(LEM[i][1]))}</span>` : ''}</span></span>
     <span class="badge st-${status(i)}">${STLABEL[status(i)]}</span></a></li>`;
 }
 
@@ -505,10 +508,10 @@ async function wordSheet(s, a, k) {
   await loadV(s);
   const w = wordAt(s, a, k), i = w[3];
   openSheet(`<div class="row between"><div class="prompt-ar" style="font-size:2.4rem">${esc(w[0])}</div><button class="audio" data-play="${s}:${a}:${k}">▶ luister</button></div>
-    <div class="muted">${esc(w[2])} · ${s}:${a} · hier: <i>${esc(w[1])}</i> (EN) · <a href="#/vers/${s}/${a}">vers bestuderen →</a></div>
+    <div class="muted">${esc(w[2])}, ${s}:${a}, hier: <i>${esc(w[1])}</i> (Engels). <a href="#/vers/${s}/${a}">Vers bestuderen</a></div>
     ${gharibHtml(s, a, k)}
     ${breakdown(w)}${irabHtml(s, a, k)}
-    <p style="margin:10px 0 6px"><b>${esc(meaning(i))}</b> ${resBadge(i)} <span class="muted small">· ${posLabel(LEM[i])} · ${LEM[i][4]}× in de Koran</span></p>
+    <p style="margin:10px 0 6px"><b>${esc(meaning(i))}</b> ${resBadge(i)} <span class="muted small">· ${posLabel(LEM[i])}, ${LEM[i][4]}× in de Koran</span></p>
     <div class="row wrap"><a class="btn primary" href="#/woord/${i}/${s}">Alles over dit woord</a>
     ${S.cards[i] ? `<span class="badge st-${status(i)}">${STLABEL[status(i)]}</span>` : `<button class="btn" id="addw">+ Leren</button><button class="btn" id="exw">Ken ik overal</button>`}
     <button class="btn" data-close>Sluiten</button></div>`);
@@ -537,16 +540,16 @@ route(/^\/woord\/(\d+)(?:\/(\d+))?$/, async (i, s) => {
   <div class="card" style="margin-top:8px">
     <div class="row between wrap">
       <div><div class="prompt-nl" style="margin:0">${esc(meaning(i))}</div>
-        <div class="muted small">${posLabel(L)} · ${L[4]}× in de Koran, in ${L[10]} ${L[10] === 1 ? 'soera' : "soera's"}</div></div>
+        <div class="muted small">${posLabel(L)}, ${L[4]}× in de Koran, in ${L[10]} ${L[10] === 1 ? 'soera' : "soera's"}</div></div>
       <div class="prompt-ar">${esc(L[0])}</div>
     </div>
     ${rootBox(i, { max: 8 })}
     ${researchBox(i)}
-    <p class="small" style="margin:0"><b>Vertalingen in context (EN, ter vergelijking):</b> ${L[9].map(esc).join(' · ')}</p>
+    <p class="small" style="margin:0"><b>Vertalingen in context (EN, ter vergelijking):</b> ${L[9].map(esc).join(', ')}</p>
     <div class="row wrap" style="margin-top:12px">
-      <span class="badge st-${st}">${STLABEL[st]}${c && !c.x ? ` · volgende herhaling ${c.d <= today() ? 'vandaag' : 'over ' + (c.d - today()) + ' d'}` : ''}${c?.n ? ` · ${c.k}/${c.n} goed` : ''}</span>
+      <span class="badge st-${st}">${STLABEL[st]}${c && !c.x ? `, volgende herhaling ${c.d <= today() ? 'vandaag' : 'over ' + (c.d - today()) + ' d'}` : ''}${c?.n ? `, ${c.k}/${c.n} goed` : ''}</span>
       ${c ? '' : `<button class="btn sm" id="add">+ Leren</button>`}
-      ${c?.x ? `<button class="btn sm" id="unx">Toch weer oefenen</button>` : `<button class="btn sm" id="ex">✓ Ken ik overal — niet meer vragen</button>`}
+      ${c?.x ? `<button class="btn sm" id="unx">Toch weer oefenen</button>` : `<button class="btn sm" id="ex">Ik ken dit woord overal, niet meer vragen</button>`}
       ${c && !c.x ? `<button class="btn sm" id="del">Verwijder</button>` : ''}
     </div>
   </div>
@@ -579,7 +582,7 @@ route(/^\/woord\/(\d+)(?:\/(\d+))?$/, async (i, s) => {
 });
 
 /* ---------------- woordenboeken ---------------- */
-const LEXNAMES = { mf: ['المفردات في غريب القرآن', 'ar-Rāghib al-Iṣfahānī — betekenis in de Koran'], mq: ['مقاييس اللغة', 'Ibn Fāris — grondidee (الأصل) van de wortel'], ln: ["Lane's Lexicon", 'Engels, klassiek en zeer uitgebreid'] };
+const LEXNAMES = { mf: ['المفردات في غريب القرآن', 'ar-Rāghib al-Iṣfahānī: de betekenis in de Koran'], mq: ['مقاييس اللغة', 'Ibn Fāris: het grondidee (الأصل) van de wortel'], ln: ["Lane's Lexicon", 'Engels, klassiek en zeer uitgebreid'] };
 async function lexBlock(root, el, first) {
   const ix = LEXIDX[root];
   if (!ix) { el.innerHTML = '<p class="muted small">Geen woordenboekartikel gevonden voor deze wortel. Gebruik de online links.</p>'; return; }
@@ -605,7 +608,7 @@ route(/^\/vers\/(\d+)\/(\d+)$/, async (s, a) => {
   await loadSurah(s); await loadV(s);
   const v = QW.s[s].v[a - 1], V = QW.v[s];
   const words = v[1].map((w, k) => {
-    const t = tbFor(s, a, k + 1), rel = t ? t.map(x => x[2]).filter(Boolean).join(' · ') : '', pos = t ? t.map(x => x[1]).join(' + ') : '';
+    const t = tbFor(s, a, k + 1), rel = t ? t.map(x => x[2]).filter(Boolean).join('، ') : '', pos = t ? t.map(x => x[1]).join(' + ') : '';
     return `<tr data-w="${s}:${a}:${k + 1}"><td class="ar big">${esc(w[0])}</td><td dir="rtl" class="small">${esc(pos)}${rel ? `<br><b>${esc(rel)}</b>` : ''}</td><td class="small">${esc(meaning(w[3]))}<br><span class="muted">${esc(w[1])}</span></td></tr>`;
   }).join('');
   const sa = V ? V.sa.filter(b => b[0].includes(a)) : [], ir = darwishBlock(s, a);
@@ -615,13 +618,13 @@ route(/^\/vers\/(\d+)\/(\d+)$/, async (s, a) => {
   <div class="card" style="margin-top:8px"><div class="verse"><div class="arline">${verseArabic(s, a, -1, { clickable: true })} <span class="vno">﴿${a}﴾</span></div></div>
     ${nlBlock(v[0])}</div>
   ${!V ? '<div class="card small muted">Tafsir en i\'rab voor deze soera zijn nog niet gedownload (offline?). Ga online of gebruik "Download alles" in Meer.</div>' : ''}
-  <h2>Woord voor woord · الإعراب</h2>
-  <div class="card" style="padding:4px 8px;overflow-x:auto"><table class="wtab"><tr><th>الكلمة</th><th dir="rtl">النوع · الإعراب</th><th>betekenis</th></tr>${words}</table>
+  <h2>Woord voor woord (الإعراب)</h2>
+  <div class="card" style="padding:4px 8px;overflow-x:auto"><table class="wtab"><tr><th>الكلمة</th><th dir="rtl">النوع, الإعراب</th><th>betekenis</th></tr>${words}</table>
     <p class="small muted">Tik op een woord voor opbouw, i'rab uit إعراب القرآن وبيانه en betekenis. Bron: The Quranic Treebank (op basis van het Quranic Arabic Corpus).</p></div>
-  ${gh.length ? `<h2>غريب الكلمات</h2><div class="card lexar" dir="rtl">${gh.map(g => `<p><b>${esc(g[0])}:</b> ${g[1]} <small class="muted">— ${esc(g[2])}</small></p>`).join('')}</div>` : ''}
+  ${gh.length ? `<h2>غريب الكلمات</h2><div class="card lexar" dir="rtl">${gh.map(g => `<p><b>${esc(g[0])}:</b> ${g[1]} <small class="muted">(${esc(g[2])})</small></p>`).join('')}</div>` : ''}
   ${V ? `<h2>التفسير الميسر</h2><div class="card lexar" dir="rtl">${V.mu[a - 1]}</div>` : ''}
   ${sa.length ? `<details class="card"><summary><b>تفسير السعدي</b> (تيسير الكريم الرحمن)</summary><div class="lexar" dir="rtl">${sa.map(b => b[1]).join('<hr>')}</div></details>` : ''}
-  ${ir ? `<details class="card" open><summary><b>إعراب القرآن وبيانه</b> — محيي الدين درويش <span class="small muted">(verzen ${ir[0][0]}–${ir[0][ir[0].length - 1]}: اللغة · الإعراب · البلاغة · الفوائد)</span></summary><div class="lexar irabfull" dir="rtl">${ir[1]}</div></details>` : ''}`;
+  ${ir ? `<details class="card" open><summary><b>إعراب القرآن وبيانه</b>، محيي الدين درويش <span class="small muted">(verzen ${ir[0][0]}–${ir[0][ir[0].length - 1]}: اللغة, الإعراب, البلاغة, الفوائد)</span></summary><div class="lexar irabfull" dir="rtl">${ir[1]}</div></details>` : ''}`;
   $main.querySelectorAll('[data-w]').forEach(el => el.addEventListener('click', () => { const [s2, a2, k2] = el.dataset.w.split(':').map(Number); wordSheet(s2, a2, k2); }));
 });
 
@@ -640,7 +643,7 @@ route(/^\/wortels$/, async () => {
     document.getElementById('rl').innerHTML = list.slice(0, lim).map(r => {
       const R = ROOTS[r], k = R[2].filter(j => S.cards[j]).length;
       return `<li><a class="item" href="#/wortel/${encodeURIComponent(r)}"><span class="rootletters ar small-root">${esc(spaced(r))}</span>
-        <span class="grow"><b>${esc(R[0])}</b><br><span class="muted small">${R[2].length} woorden · ${R[3]}×</span>
+        <span class="grow"><b>${esc(R[0])}</b><br><span class="muted small">${R[2].length} woorden, ${R[3]}×</span>
         <div class="bar" style="margin-top:4px;max-width:200px"><i style="width:${k / R[2].length * 100}%"></i></div></span>
         <span class="small muted">${k}/${R[2].length}</span></a></li>`;
     }).join('') || '<li class="item muted">Niets gevonden</li>';
@@ -658,7 +661,7 @@ route(/^\/wortel\/(.+)$/, async r => {
   <div class="card center" style="margin-top:8px">
     <div class="rootletters ar" style="font-size:3.2rem">${esc(spaced(r))}</div>
     <div class="prompt-nl" style="margin:4px 0">${esc(R[0])}</div>
-    <div class="muted small">kernbetekenis (van <span class="ar">${esc(LEM[R[1]][0])}</span>) · ${ids.length} woorden · ${R[3]}× in de Koran · ${k} geleerd</div>
+    <div class="muted small">kernbetekenis (van <span class="ar">${esc(LEM[R[1]][0])}</span>), ${ids.length} woorden, ${R[3]}× in de Koran, ${k} geleerd</div>
     <div class="row wrap" style="justify-content:center;margin-top:12px">
       <button class="btn primary" id="lf" ${newCandidates(0, 1, ids).length ? '' : 'disabled'}>Leer deze familie</button>
       <button class="btn" id="pf">Oefen familie (typen)</button>
@@ -667,7 +670,7 @@ route(/^\/wortel\/(.+)$/, async r => {
   </div>
   <div class="card" id="lex"><p class="muted small">Woordenboeken laden…</p></div>
   <div class="card small"><b>Zo gebruik je een wortel</b><p class="muted" style="margin:4px 0 0">Zoek het gemeenschappelijke idee in alle woorden hieronder. Schrijf de wortel groot in je schrift, met de vormen eronder en hun betekenis. Bij een nieuw woord: zoek eerst de 3 wortelletters, dan weet je vaak al de richting van de betekenis.</p></div>
-  <div class="card" style="padding:4px 12px"><ul class="list">${ids.map(j => wordRow(j, `${posLabel(LEM[j])} · ${LEM[j][4]}×`)).join('')}</ul></div>`;
+  <div class="card" style="padding:4px 12px"><ul class="list">${ids.map(j => wordRow(j, `${posLabel(LEM[j])}, ${LEM[j][4]}×`)).join('')}</ul></div>`;
   lexBlock(r, document.getElementById('lex'), 'mq');
   document.getElementById('lf').onclick = () => startLearn(newCandidates(0, 8, ids), dueIds(j => ids.includes(j)), 'Wortelfamilie ' + spaced(r));
   document.getElementById('pf').onclick = () => startPractice(ids, 'Familie ' + spaced(r));
@@ -681,7 +684,7 @@ route(/^\/woorden$/, async () => {
   for (let d = t - 29; d <= t; d++) { const n = S.hist[d]?.n || 0; maxN = Math.max(maxN, n); days.push([d, n]); }
   const H = Object.values(S.hist), tot = H.reduce((a, h) => a + h.n, 0), ok = H.reduce((a, h) => a + h.c, 0), mins = Math.round(H.reduce((a, h) => a + (h.ms || 0), 0) / 60000);
   const activeDays = H.filter(h => h.n > 0).length, rootsTouched = new Set(ids.map(i => LEM[i][1]).filter(Boolean)).size;
-  $main.innerHTML = `<div class="row between"><h1>Mijn woorden</h1><a class="btn sm" href="#/zoek">⌕ Zoek woord</a></div>
+  $main.innerHTML = `<div class="row between"><h1>Mijn woorden</h1><a class="btn sm" href="#/zoek">Zoek een woord</a></div>
   <div class="card"><b>Laatste 30 dagen</b>
     <div class="chart">${days.map(([d, n]) => `<i title="${n}" class="${dayDone(d) ? 'on' : ''}" style="height:${Math.max(2, n / maxN * 100)}%"></i>`).join('')}</div>
     <div class="stats" style="margin-top:10px">
@@ -692,12 +695,12 @@ route(/^\/woorden$/, async () => {
       <div class="stat"><b>${rootsTouched}</b><span>wortels</span></div>
       <div class="stat"><b>${H.reduce((a, h) => a + (h.w || 0), 0)}</b><span>schrijfopdrachten</span></div>
     </div></div>
-  <div class="chips" id="flt"><button data-f="due" class="on">Te herhalen</button><button data-f="all">Alle</button><button data-f="hard">Lastig</button><button data-f="done">Begrepen ✓</button><button data-f="r">⚠ Onderzoek</button></div>
+  <div class="chips" id="flt"><button data-f="due" class="on">Te herhalen</button><button data-f="all">Alle</button><button data-f="hard">Lastig</button><button data-f="done">Begrepen</button><button data-f="r">Onderzoek nodig</button></div>
   <div class="card" style="padding:4px 12px"><ul class="list" id="wl"></ul></div>
   ${ids.some(i => S.cards[i].l >= 2) ? '<button class="btn block" id="hardp">Oefen lastige woorden (typen)</button>' : ''}`;
   const draw = f => {
     const list = ids.filter(i => f === 'all' || (f === 'due' ? !S.cards[i].x && S.cards[i].d <= t : f === 'hard' ? S.cards[i].l >= 2 && !S.cards[i].x : f === 'done' ? S.cards[i].x : LEM[i][6] === 2)).sort((a, b) => f === 'hard' ? S.cards[b].l - S.cards[a].l : a - b);
-    document.getElementById('wl').innerHTML = list.slice(0, 400).map(i => { const c = S.cards[i]; return wordRow(i, c.x ? 'komt niet meer terug' : `${c.d <= t ? 'vandaag' : 'over ' + (c.d - t) + ' d'} · ${c.k || 0}/${c.n || 0} goed${c.l >= 3 ? ' · ✍ schrijf op' : ''}`); }).join('') || `<li class="item muted">${ids.length ? 'Niets in dit filter' : 'Nog geen woorden. Start op "Vandaag".'}</li>`;
+    document.getElementById('wl').innerHTML = list.slice(0, 400).map(i => { const c = S.cards[i]; return wordRow(i, c.x ? 'komt niet meer terug' : `${c.d <= t ? 'vandaag' : 'over ' + (c.d - t) + ' d'}, ${c.k || 0}/${c.n || 0} goed${c.l >= 3 ? ', schrijf het op' : ''}`); }).join('') || `<li class="item muted">${ids.length ? 'Niets in dit filter' : 'Nog geen woorden. Start op "Vandaag".'}</li>`;
   };
   draw('due');
   document.getElementById('flt').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; document.querySelectorAll('#flt button').forEach(x => x.classList.toggle('on', x === b)); draw(b.dataset.f); });
@@ -718,7 +721,7 @@ route(/^\/zoek$/, async () => {
       const hit = isAr ? (stripAr(L[0]).includes(nv) || normRoot(L[1]) === normRoot(v)) : ((L[5] || '').toLowerCase().includes(nv) || L[9].some(e => e.toLowerCase().includes(nv)));
       if (hit) out.push(i);
     }
-    document.getElementById('res').innerHTML = out.map(i => wordRow(i, `${posLabel(LEM[i])} · ${LEM[i][4]}×`)).join('') || '<li class="item muted">Niets gevonden</li>';
+    document.getElementById('res').innerHTML = out.map(i => wordRow(i, `${posLabel(LEM[i])}, ${LEM[i][4]}×`)).join('') || '<li class="item muted">Niets gevonden</li>';
   });
 });
 
@@ -752,19 +755,19 @@ route(/^\/lezen$/, async () => {
   const draw = () => {
     if (k >= vs.length) {
       hToday().rd = (hToday().rd || 0) + vs.length; save();
-      $main.innerHTML = `<div class="card center"><div style="font-size:2.4rem">📖</div><h1>${vs.length} verzen gelezen</h1><p class="muted">Lees ze morgen nog eens: je zult merken dat het steeds sneller gaat.</p><a class="btn primary" href="#/">Naar Vandaag</a></div>`;
+      $main.innerHTML = `<div class="card center"><h1>${vs.length} verzen gelezen</h1><p class="muted">Lees ze morgen nog eens: je zult merken dat het steeds sneller gaat.</p><a class="btn primary" href="#/">Naar Vandaag</a></div>`;
       return;
     }
     const { s, a } = vs[k];
     $main.innerHTML = `<div class="qhead"><a href="#/" class="small">✕</a><div class="bar"><i style="width:${k / vs.length * 100}%"></i></div><span class="small muted">${k + 1}/${vs.length}</span></div>
     <div class="card">
-      <div class="qlabel">Lees en begrijp · ${esc(SUR[s - 1][1])} ${s}:${a}</div>
+      <div class="qlabel">Lees en begrijp, ${esc(SUR[s - 1][1])} ${s}:${a}</div>
       ${interlinear(s, a, { targets: tg })}
       <p class="small muted">Gemarkeerd = woorden uit je laatste ronde. Onder bekende woorden staat ···: tik alleen als je echt niet meer weet.</p>
       <textarea id="own" rows="2" placeholder="Jouw vertaling (in je hoofd, hier of in je schrift)…"></textarea>
       <button class="btn block" id="tr" style="margin-top:8px">Toon vertaling</button>
       <div id="nl" class="nlline hidden" style="margin-top:10px">${esc(QW.s[s].v[a - 1][0])}</div>
-      <button class="btn primary block" id="nx" style="margin-top:10px">Volgend vers →</button>
+      <button class="btn primary block" id="nx" style="margin-top:10px">Volgend vers</button>
     </div>`;
     document.getElementById('tr').onclick = () => document.getElementById('nl').classList.remove('hidden');
     document.getElementById('nx').onclick = () => { k++; draw(); window.scrollTo(0, 0); };
@@ -783,7 +786,7 @@ route(/^\/instellingen$/, async () => {
   <div class="card">
     <h2>Kort en elke dag</h2>
     <label class="field"><span>Lengte van een ronde</span><select id="len">
-      <option value="10">Heel kort (≈ 3 min)</option><option value="15">Kort (≈ 5 min) — aanbevolen</option><option value="25">Normaal (≈ 8 min)</option><option value="40">Lang (≈ 15 min)</option></select></label>
+      <option value="10">Heel kort (≈ 3 min)</option><option value="15">Kort (≈ 5 min) (aanbevolen)</option><option value="25">Normaal (≈ 8 min)</option><option value="40">Lang (≈ 15 min)</option></select></label>
     <label class="field"><span>Dagdoel voor je streak (aantal antwoorden)</span><input type="number" id="goal" min="5" max="300" value="${st.goal}"></label>
     <label class="field"><span>Nieuwe woorden per dag</span><input type="number" id="newPerDay" min="0" max="100" value="${st.newPerDay}"></label>
     <label class="field"><span>Dagelijkse herinnering</span><div class="row"><input type="time" id="remind" value="${st.remind}" style="max-width:140px"><button class="btn" id="ics">Zet in mijn agenda</button></div>
@@ -792,16 +795,16 @@ route(/^\/instellingen$/, async () => {
   <div class="card">
     <h2>Oefenen</h2>
     <label class="field"><span>Oefenvorm</span><select id="mode">
-      <option value="type">Typen (actief ophalen) — aanbevolen</option><option value="mix">Afwisselend (typen, meerkeuze, kaart)</option><option value="mc">Meerkeuze</option><option value="flip">Flashcard (zelf beoordelen)</option></select></label>
+      <option value="type">Typen (actief ophalen) (aanbevolen)</option><option value="mix">Afwisselend (typen, meerkeuze, kaart)</option><option value="mc">Meerkeuze</option><option value="flip">Flashcard (zelf beoordelen)</option></select></label>
     <label class="field"><span>Richting</span><select id="dir">
       <option value="mix">Gemengd</option><option value="ar">Arabisch → Nederlands</option><option value="nl">Nederlands → Arabisch</option></select></label>
     <label class="field"><span>Arabisch typen met</span><select id="kb"><option value="scherm">Schermtoetsenbord in de app</option><option value="systeem">Eigen (telefoon)toetsenbord</option></select></label>
-    <label class="field"><span>Nederlandse versvertaling</span><select id="nl"><option value="ingeklapt">Ingeklapt — eerst Arabische tafsir (aanbevolen)</option><option value="tonen">Altijd tonen</option><option value="nooit">Niet tonen</option></select></label>
+    <label class="field"><span>Nederlandse versvertaling</span><select id="nl"><option value="ingeklapt">Ingeklapt, Arabische tafsir eerst (aanbevolen)</option><option value="tonen">Altijd tonen</option><option value="nooit">Niet tonen</option></select></label>
     <label class="check"><input type="checkbox" id="skipFunc" ${st.skipFunc ? 'checked' : ''}> Functiewoorden (voorzetsels, voornaamwoorden…) overslaan bij nieuwe woorden</label>
     <p class="small muted" style="margin:0">Herhalingen wisselen tussen: betekenis typen, Arabisch typen, wortel typen, woordvorm ontleden en i'rab (functie in de zin).</p>
   </div>
   <div class="card"><h2>Opslag &amp; back-up</h2>
-    <p class="small">Opslag op dit apparaat: ${persisted ? '<b style="color:var(--good)">blijvend ✓</b>' : '<b>niet gegarandeerd</b> — installeer de app op je beginscherm en maak back-ups'} · offline: ${offline ? '<b style="color:var(--good)">klaar ✓</b>' : 'nog niet (alleen via de geïnstalleerde/online versie)'}</p>
+    <p class="small">Opslag op dit apparaat: ${persisted ? '<b style="color:var(--good)">blijvend</b>' : '<b>niet gegarandeerd</b>. Installeer de app op je beginscherm en maak back-ups'}, offline: ${offline ? '<b style="color:var(--good)">klaar</b>' : 'nog niet (alleen via de geïnstalleerde/online versie)'}</p>
     <p class="muted small">Alles (woorden, streaks, statistiek) wordt automatisch bewaard op dit apparaat. Een back-up kun je op een ander apparaat weer importeren.</p>
     <div class="row wrap"><button class="btn primary" data-backup>Back-up opslaan / delen</button><label class="btn">Back-up terugzetten<input type="file" id="imp" accept="application/json,.json" hidden></label>
     <button class="btn" id="reset" style="color:var(--bad)">Alles wissen</button></div>
@@ -851,7 +854,7 @@ route(/^\/instellingen$/, async () => {
     for (let i = 0; i < files.length; i += 6) {
       await Promise.all(files.slice(i, i + 6).map(f => fetch(f).then(r => { if (!r.ok) fail++; }).catch(() => fail++).finally(() => { done++; pr.textContent = `${done}/${files.length} bestanden…`; })));
     }
-    pr.textContent = fail ? `Klaar, ${fail} mislukt — probeer opnieuw met een goede verbinding.` : 'Alles staat offline op dit apparaat ✓';
+    pr.textContent = fail ? `Klaar, ${fail} mislukt. Probeer opnieuw met een goede verbinding.` : 'Alles staat offline op dit toestel.';
     e.target.disabled = false;
   };
   if (installEvt) { const b = document.getElementById('install'); b.classList.remove('hidden'); b.onclick = () => { installEvt.prompt(); installEvt = null; b.remove(); }; }
@@ -896,7 +899,7 @@ async function startDaily(extra) {
   const fresh = newCandidates(S.focus, nNew);
   if (extra && !due.length && !fresh.length) {
     const pool = Object.keys(S.cards).map(Number).filter(i => !S.cards[i].x);
-    if (!pool.length) { toast('Nog geen woorden — kies eerst nieuwe woorden'); return; }
+    if (!pool.length) { toast('Nog geen woorden om te oefenen. Begin met een ronde op Vandaag.'); return; }
     return startPractice(pool, 'Extra ronde');
   }
   await startLearn(fresh, due, extra ? 'Extra ronde' : 'Dagelijkse ronde', S.focus);
@@ -978,13 +981,13 @@ function renderQ() {
   const i = it.i, L = LEM[i], [s, a, w] = it.ctx, word = wordAt(s, a, w);
   if (it.kind === 'intro') {
     $main.innerHTML = head() + `<div class="card qcard">
-      <div class="qlabel">Nieuw woord · #${i + 1} meest voorkomend</div>
+      <div class="qlabel">Nieuw woord, nummer ${i + 1} op frequentie</div>
       <div class="prompt-ar">${esc(L[0])}</div>
       <div class="prompt-nl">${esc(meaning(i))}</div>
-      <div class="muted small">${posLabel(L)} · ${L[4]}× in de Koran</div>
+      <div class="muted small">${posLabel(L)}, ${L[4]}× in de Koran</div>
       <div class="feedback">${rootBox(i)}${contextBlock(s, a, w, { window: 8, breakdown: interestingForm(word) })}${L[6] ? researchBox(i) : ''}</div>
-      <button class="btn primary big block" id="nx">Begrepen → <span class="small" style="opacity:.7">(Enter)</span></button>
-      <button class="btn block" id="exw" style="margin-top:8px">✓ Ken ik al overal — niet vragen</button></div>`;
+      <button class="btn primary big block" id="nx">Begrepen</button>
+      <button class="btn quiet block" id="exw" style="margin-top:6px">Ik ken dit woord al overal, niet vragen</button></div>`;
     play(s, a, w);
     const next = () => {
       SES.learned.add(i);
@@ -1003,7 +1006,7 @@ function renderQ() {
     const rel = irabRel(s, a, w);
     if (!rel) { it.kind = 'type'; it.dir = 'ar'; return renderQ(); }
     if (!it.opts) it.opts = shuffle([rel, ...shuffle(IRAB_SET.filter(x => x !== rel)).slice(0, 3)]);
-    $main.innerHTML = head() + `<div class="card qcard"><div class="qlabel">الإعراب · wat is de functie van het gemarkeerde woord in de zin?</div>
+    $main.innerHTML = head() + `<div class="card qcard"><div class="qlabel">Wat is de functie (الإعراب) van het gemarkeerde woord?</div>
       <div class="prompt-ar">${esc(word[0])}</div>${ctxAr}
       <div class="opts">${it.opts.map((x, k) => `<button class="btn opt ar-lbl" data-r="${esc(x)}"><kbd>${k + 1}</kbd>${esc(x)}</button>`).join('')}</div><div id="fb"></div></div>`;
     const answer = x => {
@@ -1017,16 +1020,16 @@ function renderQ() {
   }
   let prompt = '', body = '';
   if (it.kind === 'root') {
-    prompt = `<div class="qlabel">Wortel · typ de wortelletters van dit woord</div><div class="prompt-ar">${esc(word[0])}</div>${ctxAr}`;
+    prompt = `<div class="qlabel">Typ de wortelletters van dit woord</div><div class="prompt-ar">${esc(word[0])}</div>${ctxAr}`;
     body = arInput('ans', 'bv. ر ح م') + checkButtons();
   } else if (it.kind === 'form') {
-    prompt = `<div class="qlabel">Woordvorm · stap 1: typ de wortel</div><div class="prompt-ar">${esc(word[0])}</div><div class="muted small">${esc(word[2])}</div>${ctxAr}`;
+    prompt = `<div class="qlabel">Stap 1 van 2: typ de wortel van deze vorm</div><div class="prompt-ar">${esc(word[0])}</div><div class="muted small">${esc(word[2])}</div>${ctxAr}`;
     body = arInput('ans', 'wortelletters') + checkButtons();
   } else if (it.dir === 'ar') {
-    prompt = `<div class="qlabel">Arabisch → Nederlands · wat betekent dit woord?</div><div class="prompt-ar">${esc(L[0])}</div>${ctxAr}`;
+    prompt = `<div class="qlabel">Wat betekent dit woord?</div><div class="prompt-ar">${esc(L[0])}</div>${ctxAr}`;
     if (it.kind === 'type') body = `<input id="ans" class="answer" autocomplete="off" autocapitalize="off" placeholder="typ de Nederlandse betekenis">` + checkButtons(true);
   } else {
-    prompt = `<div class="qlabel">Nederlands → Arabisch · welk Arabisch woord is dit?</div><div class="prompt-nl">${esc(meaning(i))}</div><div class="muted small">${posLabel(L)}</div>${ctxNl}`;
+    prompt = `<div class="qlabel">Welk Arabisch woord hoort hierbij?</div><div class="prompt-nl">${esc(meaning(i))}</div><div class="muted small">${posLabel(L)}</div>${ctxNl}`;
     if (it.kind === 'type') body = arInput('ans', 'grondvorm, zonder klinkertekens') + checkButtons(true);
   }
   if (it.kind === 'mc') {
@@ -1078,10 +1081,12 @@ function renderQ() {
 function checkButtons(withHint) {
   return `<div class="row wrap" style="margin-top:10px"><button class="btn primary grow" id="chk">Controleer</button><button class="btn" id="idk">Weet ik niet</button>${withHint ? '<button class="btn" id="hint">Hint</button>' : ''}</div><div id="hinttxt" class="small muted" style="margin-top:6px"></div>`;
 }
+function clearInputs() { $main.querySelector('#chk')?.closest('.row')?.remove(); $main.querySelectorAll('.kb, .kbtoggle, #hinttxt').forEach(x => x.remove()); }
 function formStep2(it, rootG) {
+  clearInputs();
   const i = it.i, [s, a, w] = it.ctx, word = wordAt(s, a, w);
-  document.getElementById('fb').innerHTML = `<div class="verdict ${rootG ? 'ok' : 'no'}">${rootG ? 'Wortel goed ✓' : `Wortel: <span class="ar">${esc(spaced(LEM[i][1]))}</span>`}</div>
-    <div class="feedback"><div class="qlabel" style="text-align:left">Stap 2 · zo is dit woord opgebouwd</div>${breakdown(word)}
+  document.getElementById('fb').innerHTML = `<div class="verdict ${rootG ? 'ok' : 'no'}">${rootG ? 'Wortel goed' : `Wortel: <span class="ar">${esc(spaced(LEM[i][1]))}</span>`}</div>
+    <div class="feedback"><div class="qlabel" style="text-align:left">Stap 2 van 2: zo is dit woord opgebouwd</div>${breakdown(word)}
     <p class="small">In dit vers: <i>${esc(word[1])}</i> (EN)</p>
     <p><b>Begreep je wie / wanneer / wat deze vorm uitdrukt?</b></p>
     <div class="grades" style="grid-template-columns:repeat(3,1fr)"><button class="btn" data-g="0">Nee</button><button class="btn" data-g="1">Deels</button><button class="btn" data-g="2">Ja</button></div></div>`;
@@ -1100,7 +1105,7 @@ function finish(it, g) {
   save();
   if (!ok && (SES.retries[i] = (SES.retries[i] || 0) + 1) <= 2) { it.retry ={ i, ctx: it.ctx, dir: it.dir, kind: it.kind === 'form' || it.kind === 'root' ? 'type' : it.kind === 'flip' ? 'flip' : it.kind === 'irab' ? 'irab' : 'type', isNew: it.isNew }; SES.items.splice(Math.min(SES.items.length, SES.pos + 4), 0, it.retry); }
   if (it.kind === 'flip') { nextQ(); return; }
-  it.done = true;
+  it.done = true; clearInputs();
   const L = LEM[i], word = wordAt(s, a, w);
   const typed = it.given !== undefined && it.kind !== 'mc';
   const verdict = g === 2 ? 'Goed!' : g === 1 ? (it.hint ? 'Goed, met hint' : 'Bijna goed (kleine fout)') : 'Nog niet';
@@ -1113,10 +1118,10 @@ function finish(it, g) {
       ${L[6] === 2 ? researchBox(i) : ''}
       <div class="row wrap" style="margin-top:6px">
         ${typed && !ok && it.kind === 'type' ? '<button class="btn sm" id="ovr">Ik had het toch goed</button>' : ''}
-        <button class="btn sm" id="exw">✓ Ken ik overal</button>
+        <button class="btn sm" id="exw">Ik ken dit woord overal</button>
         <a href="#/woord/${i}/${s}" class="btn sm" target="_blank">Meer ↗</a>
       </div>
-      <button class="btn primary block big" id="nx" style="margin-top:10px">Volgende → <span class="small" style="opacity:.7">(Enter)</span></button>
+      <button class="btn primary block big" id="nx" style="margin-top:10px">Volgende</button>
     </div>`;
   if (!ok) play(s, a, w);
   document.getElementById('nx').onclick = nextQ;
@@ -1133,11 +1138,11 @@ function writeTask(i, ctx) {
   const L = LEM[i], [s, a, w] = ctx, fam = L[1] ? ROOTS[L[1]][2].slice(0, 4) : [i];
   return `<div class="write"><div class="row between"><b class="ar" style="font-size:1.6rem">${esc(L[0])}</b><span>${esc(meaning(i))}</span></div>
     <ol class="small">
-      ${L[1] ? `<li>Schrijf de wortel groot: <b class="ar" style="font-size:1.3rem">${esc(spaced(L[1]))}</b> — kern: ${esc(ROOTS[L[1]][0])}</li>
-      <li>Schrijf deze vormen eronder met betekenis:<br>${fam.map(j => `<span class="ar" style="font-size:1.2rem">${esc(LEM[j][0])}</span> ${esc(meaning(j))}`).join(' · ')}</li>` : ''}
+      ${L[1] ? `<li>Schrijf de wortel groot: <b class="ar" style="font-size:1.3rem">${esc(spaced(L[1]))}</b>, kern: ${esc(ROOTS[L[1]][0])}</li>
+      <li>Schrijf deze vormen eronder met betekenis:<br>${fam.map(j => `<span class="ar" style="font-size:1.2rem">${esc(LEM[j][0])}</span> ${esc(meaning(j))}`).join(', ')}</li>` : ''}
       <li>Schrijf dit vers over en onderstreep het woord:<div class="arline ar" style="font-size:1.4rem;line-height:2.1">${verseArabic(s, a, w, { window: 7 })}</div></li>
       <li>Schrijf je eigen vertaling eronder en vergelijk: <span class="muted">${esc(QW.s[s].v[a - 1][0])}</span></li>
-      <li>Ontleed de vorm <b class="ar">${esc(wordAt(s, a, w)[0])}</b>: voorvoegsel · wortel · uitgang.</li>
+      <li>Ontleed de vorm <b class="ar">${esc(wordAt(s, a, w)[0])}</b>: voorvoegsel, wortel, uitgang.</li>
     </ol></div>`;
 }
 function renderDone() {
@@ -1150,17 +1155,17 @@ function renderDone() {
   const ses = SES; SES = null; keyHandler = null;
   const ctxOf = i => ses.items.find(x => x.i === i)?.ctx;
   $main.innerHTML = `<div class="card center">
-    <div style="font-size:3rem">${dayDone(today()) ? '🔥' : '✓'}</div>
+    
     <h1>${esc(ses.title)} klaar</h1>
-    <p class="muted">${ses.n} antwoorden · ${pct}% goed · ${mins} min</p>
-    <p>${dayDone(today()) ? `Dagdoel gehaald — streak: <b>${st} ${st === 1 ? 'dag' : 'dagen'}</b>` : `Nog ${S.set.goal - h.n} voor je dagdoel — nog één korte ronde?`}</p>
-    <div class="row wrap" style="justify-content:center"><a class="btn primary" href="#/lezen">📖 Lees nu wat je net leerde</a><button class="btn" id="again">Nog een korte ronde</button><a class="btn" href="#/">Klaar</a></div></div>
-  ${writeIds.length ? `<div class="card"><h2>✍ Schrijfopdracht voor je schrift (±3 min)</h2><p class="small muted">Met de hand schrijven helpt vooral bij woorden die je fout had of nieuw zijn.</p>
+    <p class="muted">${ses.n} antwoorden, ${pct}% goed, ${mins} min</p>
+    <p>${dayDone(today()) ? `Dagdoel gehaald. Je reeks: <b>${st} ${st === 1 ? 'dag' : 'dagen'}</b>` : `Nog ${S.set.goal - h.n} voor je dagdoel. Nog één korte ronde?`}</p>
+    <div class="row wrap" style="justify-content:center"><a class="btn primary" href="#/lezen">Lees verzen met deze woorden</a><button class="btn" id="again">Nog een korte ronde</button><a class="btn" href="#/">Klaar</a></div></div>
+  ${writeIds.length ? `<div class="card"><h2>Schrijfopdracht voor je schrift (ongeveer 3 minuten)</h2><p class="small muted">Met de hand schrijven helpt vooral bij woorden die je fout had of nieuw zijn.</p>
     ${writeIds.map(i => writeTask(i, ctxOf(i) || occOf(i)[0])).join('')}
-    <button class="btn block" id="wdone">Opgeschreven ✓</button></div>` : ''}
+    <button class="btn block" id="wdone">Opgeschreven</button></div>` : ''}
   ${wrong.length ? `<div class="card"><b>Deze waren lastig:</b><ul class="list">${wrong.map(i => wordRow(i, LEM[i][1] ? `wortel ${spaced(LEM[i][1])}` : posLabel(LEM[i]))).join('')}</ul></div>` : ''}`;
   document.getElementById('again').onclick = () => startDaily(true);
-  document.getElementById('wdone')?.addEventListener('click', e => { hToday().w = (hToday().w || 0) + 1; save(); e.target.disabled = true; e.target.textContent = 'Opgeschreven ✓ — goed bezig'; });
+  document.getElementById('wdone')?.addEventListener('click', e => { hToday().w = (hToday().w || 0) + 1; save(); e.target.disabled = true; e.target.textContent = 'Opgeschreven'; });
 }
 
 /* ---------------- start ---------------- */

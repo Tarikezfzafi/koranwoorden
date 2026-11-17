@@ -1,5 +1,5 @@
 /* Service worker: alles offline. Verhoog VERSION na elke data- of code-update. */
-const VERSION = 'kw-2026-11-17-4';
+const VERSION = 'kw-2026-11-17-5';
 const CORE = ['./', 'index.html', 'app.js', 'style.css', 'manifest.webmanifest', 'data/meta.js', 'data/occ.js', 'data/lexidx.js',
   'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png'];
 for (let i = 1; i <= 114; i++) CORE.push('data/s' + i + '.js');

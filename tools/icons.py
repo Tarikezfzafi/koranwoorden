@@ -2,7 +2,7 @@
 import zlib, struct, sys, os
 def png(path, size):
     S = 3  # supersampling
-    bg, fg = (31, 95, 74), (246, 240, 222)
+    bg, fg = (43, 74, 166), (243, 223, 166)
     cx, cy = size * 0.47, size * 0.47
     R, r2, off = size * 0.30, size * 0.25, size * 0.12
     dots = [(size * 0.60, size * 0.38), (size * 0.73, size * 0.33), (size * 0.70, size * 0.49)]
