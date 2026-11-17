@@ -1,0 +1,521 @@
+# id	nederlands	vlag(2=onderzoek,1=context)	notitie
+0	van, uit, (een deel) van
+1	Allah	2	Eigennaam van God; niet simpelweg 'god'. Lees over de wortel أله en de vorm al-ilāh.
+2	niet, geen
+3	voorwaar, zeker (benadrukt de zin)
+4	in
+5	zeggen
+6	wat; dat wat
+7	degene die, die (betrekkelijk)
+8	op, over, tegen
+9	zijn, was (geweest)	1	Kāna drukt vaak een blijvende toestand uit ('placht', 'is altijd'), vooral bij Allah: 'Allah is (altijd) Vergevend'.
+10	dit, dat (aanwijzend)
+11	Heer	2	Rabb: Heer die verzorgt, opvoedt, onderhoudt en bezit. 'Heer' dekt maar een deel; zie Lane bij ربب.
+12	wie; wie ook
+13	niet (ontkenning)
+14	naar, tot
+15	als, indien; (soms) niet
+16	behalve, slechts
+17	dat, om te
+18	zij, hen (mv.)
+19	geloven	2	Āmana: geloof met vertrouwen en veiligheid (wortel amn = veilig zijn). Meer dan 'geloven dat'.
+20	hij
+21	dag
+22	aarde, land
+23	van ... weg, over
+24	reeds, zeker (bij voltooid); soms (bij onvoltooid)
+25	wanneer, als
+26	volk
+27	weten
+28	teken, vers	2	Āyah: teken/wonder/bewijs én Koranvers. Context bepaalt welke betekenis.
+29	elk, ieder, alle
+30	dat
+31	niet (verleden)
+32	maken, plaatsen, maken tot
+33	daarna, vervolgens
+34	boodschapper
+35	bestraffing, kwelling
+36	hemel
+37	ziel, zelf	1	Nafs: ziel, persoon, zelf ('henzelf'). Kan ook het lagere zelf zijn.
+38	ongelovig zijn, ondankbaar zijn	2	Kafara: oorspronkelijk 'bedekken'; zowel ongeloof als ondankbaarheid (kufr an-ni'mah). Vertaling 'ongelovig' is te smal.
+39	ding, iets
+40	of
+41	komen
+42	doen, werken
+43	geven
+44	zien
+45	tussen
+46	komen, brengen (met bi-)
+47	jullie
+48	hem, het
+49	boek, geschrift	1	Kitāb: wat voorgeschreven/opgeschreven is; ook 'voorschrift' of 'register'.
+50	waarheid, recht	2	Ḥaqq: waarheid, werkelijkheid, recht, plicht. Zeer breed begrip.
+51	voor (tijd), eerder
+52	mensen, mensheid
+53	toen, (gedenk) toen
+54	willen
+55	hem, zijn
+56	welk; o (in yā ayyuhā)
+57	gelovige
+58	als (onwerkelijk), had ... maar
+59	na
+60	bij
+61	scheppen
+62	neerzenden, openbaren
+63	goed, beter
+64	loochenen, liegen noemen
+65	weg, pad
+66	roepen, aanroepen, smeken
+67	godvrezend zijn, zich beschermen	2	Ittaqā (wortel wqy): zich beschermen tegen Allah's ongenoegen; 'vrezen' is te smal. Taqwa = bewust behoedzaam leven.
+68	zaak, bevel
+69	met
+70	alwetend
+71	sommige, een deel
+72	ongelovige	2	Kāfir: zie kafara (bedekker, ondankbare).
+73	bezitter van, met
+74	laatste, hiernamaals
+75	toen, nadat
+76	zij, hen (mv.)
+77	ander dan, zonder, niet
+78	tuin, paradijs	1	Jannah: tuin vol schaduw (wortel jnn = bedekken); in de Koran meestal het Paradijs.
+79	god, godheid	1	Ilāh: wat aanbeden wordt; 'lā ilāha illā Allāh'.
+80	vuur
+81	leiden, de weg wijzen
+82	naast, behalve, buiten
+83	totdat, zelfs
+84	willen, bedoelen
+85	Mozes (Musa)
+86	volgen
+87	zij, hen
+88	hart	1	Qalb: hart als zetel van begrip en geloof; wortel = omkeren.
+89	dienaar, slaaf	1	'Abd: aanbidder én dienaar van Allah; ook slaaf.
+90	zenden
+91	opdat, misschien
+92	onrechtpleger	2	Ẓālim: wie iets op de verkeerde plek zet (ẓulm); onrecht tegen anderen of zichzelf, ook shirk.
+93	nemen, grijpen
+94	nee, integendeel
+95	familie, mensen van
+96	of (vraag), of soms
+97	nemen tot, aannemen
+98	aanbidden, dienen	2	'Abada: aanbidden met volledige onderwerping; omvat heel het leven, niet alleen rituelen.
+99	hand	1	Yad: hand, ook macht of gunst. Bij Allah: zorgvuldig lezen (geen vergelijking).
+100	duidelijk
+101	Genadevolle (Raḥīm)	1	Raḥīm: barmhartig in daad, vooral jegens gelovigen; vergelijk Raḥmān.
+102	wereld(se leven)	1	Dunyā: het nabije/lagere leven; letterlijk 'het dichtstbijzijnde'.
+103	barmhartigheid
+104	onrecht doen
+105	haar, het
+106	geweldig, groot
+107	vragen
+108	vinden
+109	kennis
+110	beloning, loon
+111	nooit, zal niet
+112	jullie
+113	Almachtige, machtig
+114	doen uitgaan, naar buiten brengen
+115	Alwijze
+116	eten
+117	is ...? (vraagpartikel)
+118	godsdienst, vergelding	2	Dīn: religie, levenswijze, gehoorzaamheid én oordeel/vergelding (yawm ad-dīn). Context beslissend.
+119	woord, uitspraak
+120	Vergevingsgezinde
+121	is niet
+122	Satan, duivel
+123	voorbeeld, gelijkenis
+124	doen
+125	engel
+126	kijken, zien, wachten op
+127	beschermer, bondgenoot	2	Walī: nabije beschermer/vriend/voogd; ook bondgenoot. Meerdere lagen.
+128	bezit, rijkdom
+129	leiding
+130	gedenken, noemen
+131	gunst, overvloed
+132	nacht
+133	gebed (salat)	2	Ṣalāh: het rituele gebed; bij Allah/engelen ook zegen/smeekbede. Wortel ṣlw wordt besproken.
+134	hoe
+135	doden
+136	vrezen
+137	eerste
+138	jij (m.)
+139	jullie
+140	jou, jouw
+141	zonen, kinderen (van)
+142	meeste, meer
+143	terugkeren
+144	metgezellen, bewoners
+145	zich afwenden; tot beschermer nemen	1	Tawallā: met 'an = zich afwenden; zonder = als bondgenoot nemen.
+146	horen
+147	bevelen
+148	Hel (Jahannam)
+149	wij
+150	echtgeno(o)t(e), paar
+151	binnengaan
+152	leven
+153	gedenken, vermaning	1	Dhikr: herinnering, gedenken, vermaning, ook de Koran zelf.
+154	gelijk aan, zoals
+155	profeet
+156	waarom niet; als niet
+157	broer
+158	eeuwig verblijvend
+159	Farao
+160	rechtschapen
+161	iemand, één
+162	wereld (mv. werelden)
+163	vergelden
+164	pijnlijk
+165	gezicht	1	Wajh: gezicht, ook 'omwille van' (wajh Allāh) of richting.
+166	gehoorzamen
+167	openbaren, inspireren	1	Awḥā: snelle verborgen mededeling; openbaring aan profeten, maar ook inspiratie (bij)en, moeder van Musa).
+168	mens
+169	duidelijk bewijs
+170	deelgenoten toekennen (shirk)	2	Ashraka: iets/iemand naast Allah plaatsen in aanbidding of eigenschappen.
+171	daad
+172	werpen
+173	weinig
+174	ons, wij
+175	opstanding (Qiyāmah)
+176	ander
+177	Koran
+178	beloven
+179	Abraham (Ibrahim)
+180	uitgeven, besteden
+181	maar
+182	vergeven
+183	maar, echter
+184	huis
+185	rechterhand, eed
+186	doen dwalen
+187	gemeenschap, natie	1	Ummah: gemeenschap; soms ook 'tijdspanne' of 'voorbeeld' (16:120).
+188	vaderen, voorvaderen
+189	treffen, overkomen
+190	liefhebben
+191	water
+192	veel
+193	berouw tonen, terugkeren	1	Tāba: terugkeren (naar Allah); bij Allah: zich in genade tot iemand keren.
+194	zoon
+195	zij, het (vr.)
+196	neerzenden (geleidelijk)
+197	goede daad
+198	verdienen, verwerven
+199	voorzien, schenken
+200	reciteren, volgen
+201	mij, mijn
+202	ik
+203	waarachtig
+204	helpen
+205	vrouwen
+206	beslissen, voltooien
+207	geduldig zijn, standvastig zijn	1	Ṣabara: geduld, volharding én standvastigheid; zich inhouden.
+208	slechte daad
+209	waarschuwer
+210	Erbarmer (Raḥmān)	2	Ar-Raḥmān: alomvattende barmhartigheid; Naam van Allah. Verschil met Raḥīm wordt in tafsir besproken.
+211	stromen
+212	stad, dorp
+213	oog, bron
+214	dag (overdag)
+215	getuige
+216	aanraken, treffen
+217	kind
+218	streng, hevig
+219	voorziening, levensonderhoud
+220	slaan; (voorbeeld) geven	1	Ḍaraba: slaan, maar ook een voorbeeld geven, reizen (ḍaraba fī l-arḍ). Zeer contextafhankelijk.
+221	wat betreft
+222	oprichten, verrichten
+223	rivier
+224	strijden tegen, vechten
+225	jullie
+226	allen, samen
+227	uitgaan, vertrekken
+228	dwalen, verloren gaan
+229	opwekken, zenden
+230	schepping
+231	termijn
+232	misdadiger
+233	onder
+234	tot leven brengen
+235	Alziende
+236	vernietigen
+237	zich herinneren, ter harte nemen
+238	dood
+239	vijand
+240	gunst, zegening
+241	kwaad
+242	verzinnen (leugen)
+243	godvrezende	2	Muttaqī: wie taqwa heeft; zie ittaqā.
+244	het verborgene (ghayb)
+245	vermeerderen
+246	verstand gebruiken, begrijpen
+247	schrijven, voorschrijven
+248	het best wetend
+249	belofte
+250	zicht, ogen
+251	huis, verblijf
+252	koningschap, heerschappij
+253	het Uur, uur
+254	denken, vermoeden	1	Ẓanna: vermoeden, maar soms 'zeker weten' (2:46).
+255	Alhorende
+256	dankbaar zijn
+257	op de hoogte brengen
+258	vader
+259	pad, weg
+260	almachtig, in staat
+261	geloof
+262	oordelen
+263	hem
+264	laten, verlaten
+265	alwetend (van het verborgene)
+266	waarschuwen
+267	getuigen
+268	afgodendienaar, polytheïst
+269	menen, denken
+270	borst
+271	roepen
+272	bezitten
+273	lof
+274	licht
+275	Israël
+276	Noach (Nuh)
+277	verheerlijken (subḥān)
+278	woord
+279	vergelding, beloning
+280	in staat zijn
+281	doen binnengaan
+282	zal (later)
+283	vrede	1	Salām: vrede, veiligheid, groet; ook Naam van Allah (as-Salām).
+284	boven
+285	onderwijzen
+286	glorie aan, verheven is	1	Subḥān: verklaren dat Allah vrij is van elk tekort.
+287	zee
+288	dragen
+289	bestraffen
+290	verlaten, achterlaten
+291	hoogmoedig zijn
+292	geleid worden
+293	tonen
+294	wee
+295	hoe slecht is
+296	vrezen (met ontzag)
+297	bereiken
+298	om vergeving vragen
+299	groot
+300	vertrouwen (op Allah)	1	Tawakkul: zaken toevertrouwen aan Allah na eigen inspanning.
+301	partner, deelgenoot
+302	plots, zie!
+303	naam
+304	welnu, voorwaar
+305	hem, het
+306	toestemming
+307	moslim, die zich overgeeft	2	Muslim: wie zich overgeeft aan Allah; in de Koran ook voor eerdere profeten. Breder dan de huidige groepsnaam.
+308	sterven
+309	verbieden, heilig verklaren
+310	afrekening
+311	berg
+312	verheugen met goed nieuws
+313	dood, levenloos
+314	weldoener	1	Muḥsin: wie iḥsān heeft: goed doen én aanbidden alsof je Allah ziet.
+315	tevreden zijn
+316	het goede, redelijke	1	Ma'rūf: het algemeen erkende goede; ook 'op redelijke wijze'.
+317	dwaling
+318	recht
+319	zondaar, overtreder	1	Fāsiq: wie uit de gehoorzaamheid breekt (als dadel uit de schil).
+320	bedroeven
+321	redden
+322	ongeloof
+323	verzamelen
+324	zonde
+325	mens (lichamelijk)
+326	afhouden, verhinderen
+327	gezag, bewijs	1	Sulṭān: macht/gezag én duidelijk bewijs.
+328	terugsturen
+329	beste, mooiste
+330	proeven
+331	gaan, wegnemen
+332	zich vestigen; gelijk zijn	2	Istawā (ʿalā l-ʿarsh): vestigen boven de Troon. Theologisch besproken; lees tafsir.
+333	zich neerbuigen (sujud)
+334	genot, voorziening (tijdelijk)
+335	tijd, moment
+336	vergeten
+337	duidelijk maken
+338	zonde
+339	helper
+340	van mening verschillen
+341	boodschapper (gezondene)
+342	Maria (Maryam)
+343	beproeving, verleiding	2	Fitnah: beproeving, verleiding, verdrukking, onrust, burgeroorlog. Zeer breed.
+344	zoeken, streven naar
+345	moeder
+346	weldaden, gunsten
+347	staan, opstaan
+348	groep
+349	heilig, verboden
+350	zon
+351	vee
+352	leugen
+353	nee, zeker niet!
+354	verliezer
+355	zakat, reiniging	2	Zakāh: verplichte aalmoes én zuivering/groei (wortel zkw).
+356	nakomelingen
+357	volstaan
+358	leugenaar
+359	verbieden
+360	afloop, einde
+361	zich afkeren
+362	waar, waar ook
+363	strenger, sterker
+364	baten
+365	hem
+366	dan, in dat geval
+367	goede daad, goed
+368	één (vr.)
+369	goed, rein (vr.)
+370	één
+371	kracht
+372	afwenden, keren
+373	misschien
+374	kwaad
+375	notabelen, raad
+376	verblijven
+377	oordeel, wijsheid
+378	slecht zijn
+379	edel, genereus
+380	zien, inzien
+381	verbond, belofte
+382	alsof
+383	hem, het
+384	wind
+385	leger, troepen
+386	troon
+387	man
+388	nieuws, bericht
+389	jullie
+390	altijd, nooit (ontkennend)
+391	tovenarij
+392	moskee, plaats van sujud
+393	bestemming
+394	verbeteren, vrede stichten
+395	vergeving
+396	gehoor geven, verhoren
+397	gelovige (vrouw)
+398	hoe, waar, wanneer
+399	mannen
+400	zich ontfermen
+401	baten, helpen
+402	worden
+403	verhaal, gesprek
+404	gelijk
+405	kwijtschelden, vergeven
+406	poort, deur
+407	ongehoorzaam zijn
+408	achteloos, onoplettend
+409	vooruitsturen
+410	slagen, succes hebben	1	Aflaḥa: blijvend succes (falāḥ), wortel = ploegen/bewerken.
+411	streven, strijden	2	Jāhada: zich inspannen tot het uiterste, met bezit en ziel. Jihad = inspanning; strijd is één vorm.
+412	plaats
+413	huichelaar
+414	maan
+415	Jozef (Yusuf)
+416	Lot (Lut)
+417	wat?
+418	vrees
+419	valsheid, nietig
+420	familie, volgelingen
+421	hellevuur
+422	het waarneembare, getuigenis
+423	allen
+424	dichtbij
+425	mooi doen lijken
+426	vrouw, echtgenote
+427	list
+428	Thamud
+429	beseffen, merken
+430	voorbijgaan, alleen zijn
+431	hen
+432	verbond
+433	Adam
+434	Jezus (Isa)
+435	blaam, zonde
+436	ver
+437	geweld, kracht, ellende
+438	in staat zijn; afmeten, beperken	1	Qadara: macht hebben, maar ook (af)meten, beperken (rizq) en waarderen.
+439	tong, taal
+440	zoeken; onrecht plegen	1	Baghā: zoeken/verlangen, maar ook overtreden/onrecht doen.
+441	twisten
+442	(alleen) jou/hem (benadrukt)
+443	bijna
+444	voedsel
+445	achter
+446	levend
+447	vrouwelijk
+448	zij (vr. mv.)
+449	groter
+450	ten volle nemen (bij de dood)	1	Tawaffā: volledig innemen; ook voor slaap (6:60) en bij Isa (3:55) besproken.
+451	behoefteloos, rijk
+452	groep
+453	vertrouwensman, beheerder
+454	ontmoeting
+455	'Ad (volk)
+456	duisternis
+457	zeven
+458	ofwel, als
+459	redden
+460	zich neerbuigend
+461	vervangen, veranderen
+462	wees
+463	behoeftige, arme
+464	vervloeken
+465	schip
+466	toestaan; horen
+467	beproeven, verleiden
+468	generatie, eeuw
+469	vermaning, herinnering
+470	gehoor
+471	verheffen
+472	achter; opvolgers
+473	jawel, zeker
+474	zich overgeven	2	Aslama: zich onderwerpen/overgeven (aan Allah). Zie islām.
+475	smeekbede, roep
+476	hulp, overwinning
+477	hopen
+478	schenken
+479	verzamelen
+480	bij
+481	beramen, een list smeden
+482	toevlucht, verblijf
+483	vroom; land (tegenover zee)	1	Barr: vasteland; birr = vroomheid; barr = goed/rechtvaardig.
+484	laten proeven
+485	djinn
+486	tovenaar
+487	dienstbaar maken
+488	verderfzaaier
+489	bespotten
+490	kopen, ruilen
+491	blind
+492	lopen
+493	doen sterven
+494	verbergen
+495	geest (rūḥ)	2	Rūḥ: geest, ziel, Jibril (ar-Rūḥ al-Amīn), openbaring. Kennis erover is beperkt (17:85).
+496	maand
+497	goed doen
+498	deel, aandeel
+499	hoeveel
+500	goed, mooi
+501	vastgesteld
+502	neerleggen, bevallen
+503	getuige
+504	loochenaar
+505	vermoeden
+506	voorbereiden
+507	herkennen, kennen
+508	zich haasten, streven
+509	spreken tot
+510	wijsheid	2	Ḥikmah: wijsheid; volgens velen ook de Sunnah naast het Boek. Lees tafsir.
+511	geduldige
+512	beproeven
+513	toestaan, halal maken
+514	zich veilig voelen; toevertrouwen
+515	straf
+516	keer
+517	Aäron (Harun)
+518	onrecht
+519	vertellen, volgen
